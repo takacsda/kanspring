@@ -25,11 +25,23 @@ public class CardService {
         return cardRepository.findById(cardId);
     }
 
+    public Card createCard(
+        String title,
+          String description,
+          CardPriority priority,
+          UUID ownerId,
+          UUID assigneeId
+    ) {
+        Card card = new Card(title, description, priority, ownerId, assigneeId);
+        cardRepository.save(card);
+        return card;
+    }
+
     public void save(Card card) {
         cardRepository.save(card);
     }
 
-    public boolean deleteBId(UUID cardId) {
+    public boolean deleteById(UUID cardId) {
         if (findById(cardId).isEmpty()) return false;
 
         cardRepository.deleteById(cardId);

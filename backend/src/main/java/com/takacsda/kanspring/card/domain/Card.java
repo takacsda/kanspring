@@ -14,24 +14,20 @@ public class Card {
     private Instant updatedAt;
     private final Instant createdAt;
 
-    public Card(String title, String description, CardPriority priority, UUID ownerId) {
+    public Card(String title, String description, CardPriority priority, UUID ownerId, UUID assigneeId) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title should not be null.");
+            throw new IllegalArgumentException("Title must not be blank.");
         }
-        this.title = title;
-
-        if (priority == null) {
-            this.priority = CardPriority.MEDIUM;
-        } else this.priority = priority;
+        if (ownerId == null) {
+            throw new IllegalArgumentException("Owner ID must not be null.");
+        }
 
         this.id = UUID.randomUUID();
-
-        if (ownerId == null) {
-            throw new IllegalArgumentException("OwnerID should not be null.");
-        }
-        this.ownerId = ownerId;
-
+        this.title = title;
         this.description = description;
+        this.priority = priority == null ? CardPriority.MEDIUM : priority;
+        this.ownerId = ownerId;
+        this.assigneeId = assigneeId;
         this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
     }

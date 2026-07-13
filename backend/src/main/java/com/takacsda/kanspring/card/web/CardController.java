@@ -14,6 +14,8 @@ import com.takacsda.kanspring.card.web.dto.ChangeTitleCardRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 import java.net.URI;
 import java.util.List;
@@ -39,6 +41,8 @@ public class CardController {
         this.cardService = cardService;
     }
 
+    @Operation(summary = "List all the cards")
+    @ApiResponse(responseCode = "200", description = "All cards listed")
     @GetMapping("")
     public List<CardResponse> getAllCards() {
         return cardService.findAll().
@@ -48,6 +52,11 @@ public class CardController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a specific card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card found"),
+        @ApiResponse(responseCode = "404", description = "Card with UUID NOT FOUND")
+    })
     public ResponseEntity<CardResponse> getCardById(@PathVariable UUID id) {
         return cardService.findById(id)
                 .map(CardResponse::from)
@@ -56,9 +65,13 @@ public class CardController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CardResponse> addCard(@RequestBody CardRequest cardRequest) {
-        Card card = new Card(cardRequest.title(), cardRequest.description(), cardRequest.priority(),cardRequest.ownerId());
-        cardService.save(card);
+    @Operation(summary = "Create a new card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "New card is created"),
+        @ApiResponse(responseCode = "400", description = "Invalid request for creating card")
+    })
+    public ResponseEntity<CardResponse> addCard(@Valid @RequestBody CardRequest cardRequest) {
+        Card card = cardService.createCard(cardRequest.title(), cardRequest.description(),cardRequest.priority(),cardRequest.ownerId(), cardRequest.assigneeId());
         URI location = URI.create("/api/cards/" + card.getId());
 
         return ResponseEntity.
@@ -67,8 +80,13 @@ public class CardController {
     }
     
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Card deleted"),
+        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
+    })
     public ResponseEntity<Void> deleteCard(@PathVariable UUID id) {
-        if (!cardService.deleteBId(id)) {
+        if (!cardService.deleteById(id)) {
             return ResponseEntity.notFound().build();
         }
         
@@ -76,7 +94,12 @@ public class CardController {
     }
 
     @PatchMapping("/{id}/assignee")
-    public ResponseEntity<CardResponse> assignToUser(@PathVariable UUID id, @RequestBody AssignCardRequest request) {
+    @Operation(summary = "Assign a card to a user")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card assigned to a user"),
+        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
+    })
+    public ResponseEntity<CardResponse> assignToUser(@PathVariable UUID id, @Valid @RequestBody AssignCardRequest request) {
         return cardService.assignToUser(id, request.assigneeId()).
                 map(CardResponse::from).
                 map(ResponseEntity::ok).
@@ -84,7 +107,12 @@ public class CardController {
     }
 
     @PatchMapping("/{id}/title")
-    public ResponseEntity<CardResponse> changeTitle(@PathVariable UUID id, @RequestBody ChangeTitleCardRequest request) {
+    @Operation(summary = "Change title of a card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card title changed"),
+        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
+    })
+    public ResponseEntity<CardResponse> changeTitle(@PathVariable UUID id, @Valid @RequestBody ChangeTitleCardRequest request) {
         return cardService.changeTitle(id, request.title()).
                 map(CardResponse::from).
                 map(ResponseEntity::ok).
@@ -92,7 +120,12 @@ public class CardController {
     }
 
     @PatchMapping("/{id}/description")
-    public ResponseEntity<CardResponse> changeDescription(@PathVariable UUID id, @RequestBody ChangeDescriptionCardRequest request) {
+    @Operation(summary = "Change description of a card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card description changed"),
+        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
+    })
+    public ResponseEntity<CardResponse> changeDescription(@PathVariable UUID id, @Valid @RequestBody ChangeDescriptionCardRequest request) {
         return cardService.changeDescription(id, request.description()).
                 map(CardResponse::from).
                 map(ResponseEntity::ok).
@@ -100,7 +133,12 @@ public class CardController {
     }
 
     @PatchMapping("/{id}/priority")
-    public ResponseEntity<CardResponse> changePriority(@PathVariable UUID id, @RequestBody ChangePriorityCardRequest request) {
+    @Operation(summary = "Change priority of a card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card priority changed"),
+        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
+    })
+    public ResponseEntity<CardResponse> changePriority(@PathVariable UUID id, @Valid @RequestBody ChangePriorityCardRequest request) {
         return cardService.changePriority(id, request.priority()).
                 map(CardResponse::from).
                 map(ResponseEntity::ok).

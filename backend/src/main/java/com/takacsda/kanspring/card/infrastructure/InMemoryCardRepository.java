@@ -41,7 +41,7 @@ public class InMemoryCardRepository implements CardRepository {
 
     @PostConstruct
     public void post() {
-        Card card = new Card("First title", "This is my first card", CardPriority.LOW, UUID.randomUUID());
+        Card card = new Card("First title", "This is my first card", CardPriority.LOW, UUID.randomUUID(), null);
         cardsList.put(card.getId(), card);
     }
     
