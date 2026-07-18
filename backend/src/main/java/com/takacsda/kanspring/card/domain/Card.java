@@ -34,7 +34,7 @@ public class Card {
 
     public void changePriority(CardPriority priority) {
         if (priority == null) {
-            throw new IllegalArgumentException("OwnerID should not be null.");
+            throw new IllegalArgumentException("Priority should not be null.");
         }
         this.priority = priority;
         updateTime();
@@ -42,7 +42,7 @@ public class Card {
 
     public void changeTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title should not be null.");
+            throw new IllegalArgumentException("Title should not be null or blank.");
         }
         this.title = title;
         updateTime();
@@ -54,6 +54,9 @@ public class Card {
     }
 
     public void assignToUser(UUID assigneeId) {
+        if (assigneeId == null) {
+            this.assigneeId = null;
+        }
         this.assigneeId = assigneeId;
         updateTime();
     }

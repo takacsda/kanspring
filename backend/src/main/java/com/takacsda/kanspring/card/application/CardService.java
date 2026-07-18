@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.takacsda.kanspring.card.domain.Card;
 import com.takacsda.kanspring.card.domain.CardPriority;
+import com.takacsda.kanspring.card.web.dto.UpdateCardRequest;
 
 @Service
 public class CardService {
@@ -37,15 +38,35 @@ public class CardService {
         return card;
     }
 
-    public void save(Card card) {
-        cardRepository.save(card);
-    }
-
     public boolean deleteById(UUID cardId) {
         if (findById(cardId).isEmpty()) return false;
 
         cardRepository.deleteById(cardId);
         return true;
+    }
+
+    public Optional<Card> updateCard (UUID cardId, UpdateCardRequest request) {
+        return cardRepository.findById(cardId).
+            map(card -> {
+                if (request.hasTitle()) {
+                    card.changeTitle(request.getTitle());
+                    cardRepository.save(card);
+                }
+                if (request.hasDescription()) {
+                    card.changeDescription(request.getDescription());
+                    cardRepository.save(card);
+                }
+                if (request.hasPriority()) {
+                    card.changePriority(request.getPriority());
+                    cardRepository.save(card);
+                }
+                if (request.hasAssigneeId()) {
+                    card.assignToUser(request.getAssigneeId());
+                    cardRepository.save(card);
+                    System.out.println(request);
+                }
+                return card;
+            });
     }
 
     public Optional<Card> assignToUser(UUID cardId, UUID assigneeId) {

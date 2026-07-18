@@ -7,7 +7,7 @@ import com.takacsda.kanspring.card.domain.CardPriority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CardRequest(
+public record CreateCardRequest(
     @NotBlank
     String title,
     String description,

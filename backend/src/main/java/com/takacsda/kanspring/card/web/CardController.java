@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.takacsda.kanspring.card.application.CardService;
 import com.takacsda.kanspring.card.domain.Card;
-import com.takacsda.kanspring.card.web.dto.CardRequest;
+import com.takacsda.kanspring.card.web.dto.CreateCardRequest;
+import com.takacsda.kanspring.card.web.dto.UpdateCardRequest;
 import com.takacsda.kanspring.card.web.dto.AssignCardRequest;
 import com.takacsda.kanspring.card.web.dto.CardResponse;
 import com.takacsda.kanspring.card.web.dto.ChangeDescriptionCardRequest;
@@ -70,13 +71,27 @@ public class CardController {
         @ApiResponse(responseCode = "201", description = "New card is created"),
         @ApiResponse(responseCode = "400", description = "Invalid request for creating card")
     })
-    public ResponseEntity<CardResponse> addCard(@Valid @RequestBody CardRequest cardRequest) {
+    public ResponseEntity<CardResponse> addCard(@Valid @RequestBody CreateCardRequest cardRequest) {
         Card card = cardService.createCard(cardRequest.title(), cardRequest.description(),cardRequest.priority(),cardRequest.ownerId(), cardRequest.assigneeId());
         URI location = URI.create("/api/cards/" + card.getId());
 
         return ResponseEntity.
                 created(location).
                 body(CardResponse.from(card));
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update a card")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Card updated"),
+        @ApiResponse(responseCode = "400", description = "Invalid request for updating card"),
+        @ApiResponse(responseCode = "404", description = "Card not found for update"),
+    })
+    public ResponseEntity<CardResponse> updateCard(@PathVariable UUID id, @RequestBody UpdateCardRequest request) {
+        return cardService.updateCard(id, request).
+            map(CardResponse::from).
+            map(ResponseEntity::ok).
+            orElseGet(() -> ResponseEntity.notFound().build());
     }
     
     @DeleteMapping("/{id}")
@@ -93,6 +108,7 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
+    @Deprecated
     @PatchMapping("/{id}/assignee")
     @Operation(summary = "Assign a card to a user")
     @ApiResponses({
@@ -106,6 +122,7 @@ public class CardController {
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Deprecated
     @PatchMapping("/{id}/title")
     @Operation(summary = "Change title of a card")
     @ApiResponses({
@@ -119,6 +136,7 @@ public class CardController {
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Deprecated
     @PatchMapping("/{id}/description")
     @Operation(summary = "Change description of a card")
     @ApiResponses({
@@ -132,6 +150,7 @@ public class CardController {
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Deprecated
     @PatchMapping("/{id}/priority")
     @Operation(summary = "Change priority of a card")
     @ApiResponses({
