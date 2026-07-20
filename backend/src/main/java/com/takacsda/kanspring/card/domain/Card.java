@@ -54,9 +54,6 @@ public class Card {
     }
 
     public void assignToUser(UUID assigneeId) {
-        if (assigneeId == null) {
-            this.assigneeId = null;
-        }
         this.assigneeId = assigneeId;
         updateTime();
     }

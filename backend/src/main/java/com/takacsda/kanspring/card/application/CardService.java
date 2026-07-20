@@ -26,6 +26,13 @@ public class CardService {
         return cardRepository.findById(cardId);
     }
 
+    public boolean deleteById(UUID cardId) {
+        if (findById(cardId).isEmpty()) return false;
+
+        cardRepository.deleteById(cardId);
+        return true;
+    }
+
     public Card createCard(
         String title,
           String description,
@@ -36,13 +43,6 @@ public class CardService {
         Card card = new Card(title, description, priority, ownerId, assigneeId);
         cardRepository.save(card);
         return card;
-    }
-
-    public boolean deleteById(UUID cardId) {
-        if (findById(cardId).isEmpty()) return false;
-
-        cardRepository.deleteById(cardId);
-        return true;
     }
 
     public Optional<Card> updateCard (UUID cardId, UpdateCardRequest request) {
