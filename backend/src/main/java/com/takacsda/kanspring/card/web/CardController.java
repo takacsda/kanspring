@@ -7,11 +7,7 @@ import com.takacsda.kanspring.card.application.CardService;
 import com.takacsda.kanspring.card.domain.Card;
 import com.takacsda.kanspring.card.web.dto.CreateCardRequest;
 import com.takacsda.kanspring.card.web.dto.UpdateCardRequest;
-import com.takacsda.kanspring.card.web.dto.AssignCardRequest;
 import com.takacsda.kanspring.card.web.dto.CardResponse;
-import com.takacsda.kanspring.card.web.dto.ChangeDescriptionCardRequest;
-import com.takacsda.kanspring.card.web.dto.ChangePriorityCardRequest;
-import com.takacsda.kanspring.card.web.dto.ChangeTitleCardRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/api/cards")
+@RequestMapping("/api/v1/cards")
 public class CardController {
     private final CardService cardService;
     
@@ -107,61 +103,4 @@ public class CardController {
         
         return ResponseEntity.noContent().build();
     }
-
-    @Deprecated
-    @PatchMapping("/{id}/assignee")
-    @Operation(summary = "Assign a card to a user")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Card assigned to a user"),
-        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
-    })
-    public ResponseEntity<CardResponse> assignToUser(@PathVariable UUID id, @Valid @RequestBody AssignCardRequest request) {
-        return cardService.assignToUser(id, request.assigneeId()).
-                map(CardResponse::from).
-                map(ResponseEntity::ok).
-                orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Deprecated
-    @PatchMapping("/{id}/title")
-    @Operation(summary = "Change title of a card")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Card title changed"),
-        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
-    })
-    public ResponseEntity<CardResponse> changeTitle(@PathVariable UUID id, @Valid @RequestBody ChangeTitleCardRequest request) {
-        return cardService.changeTitle(id, request.title()).
-                map(CardResponse::from).
-                map(ResponseEntity::ok).
-                orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Deprecated
-    @PatchMapping("/{id}/description")
-    @Operation(summary = "Change description of a card")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Card description changed"),
-        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
-    })
-    public ResponseEntity<CardResponse> changeDescription(@PathVariable UUID id, @Valid @RequestBody ChangeDescriptionCardRequest request) {
-        return cardService.changeDescription(id, request.description()).
-                map(CardResponse::from).
-                map(ResponseEntity::ok).
-                orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @Deprecated
-    @PatchMapping("/{id}/priority")
-    @Operation(summary = "Change priority of a card")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Card priority changed"),
-        @ApiResponse(responseCode = "404", description = "Card NOT FOUND")
-    })
-    public ResponseEntity<CardResponse> changePriority(@PathVariable UUID id, @Valid @RequestBody ChangePriorityCardRequest request) {
-        return cardService.changePriority(id, request.priority()).
-                map(CardResponse::from).
-                map(ResponseEntity::ok).
-                orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    
 }

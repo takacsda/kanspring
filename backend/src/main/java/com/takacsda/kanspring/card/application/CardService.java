@@ -68,44 +68,4 @@ public class CardService {
                 return card;
             });
     }
-
-    public Optional<Card> assignToUser(UUID cardId, UUID assigneeId) {
-        return cardRepository.findById(cardId).
-                map(card -> {
-                    card.assignToUser(assigneeId);
-                    cardRepository.save(card);
-                    return card;
-                });
-    }
-
-    public Optional<Card> changeTitle(UUID cardId, String title) {
-        return cardRepository.findById(cardId).
-                map(card -> {
-                    card.changeTitle(title);
-                    cardRepository.save(card);
-                    return card;
-                });
-    }
-
-    public Optional<Card> changeDescription(UUID cardId, String description) {
-        return cardRepository.findById(cardId).
-                map(card -> {
-                    card.changeDescription(description);
-                    cardRepository.save(card);
-                    return card;
-                });
-    }
-
-    public Optional<Card> changePriority(UUID cardId, CardPriority cardPriority) {
-        return cardRepository.findById(cardId).
-                map(card -> {
-                    card.changePriority(cardPriority);
-                    cardRepository.save(card);
-                    return card;
-                });
-    }
-
-    public Card getCardById(UUID cardId) {
-        return cardRepository.findById(cardId).orElseThrow();
-    }
 }
