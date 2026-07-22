@@ -50,21 +50,18 @@ public class CardService {
             map(card -> {
                 if (request.hasTitle()) {
                     card.changeTitle(request.getTitle());
-                    cardRepository.save(card);
                 }
                 if (request.hasDescription()) {
                     card.changeDescription(request.getDescription());
-                    cardRepository.save(card);
                 }
                 if (request.hasPriority()) {
                     card.changePriority(request.getPriority());
-                    cardRepository.save(card);
                 }
                 if (request.hasAssigneeId()) {
                     card.assignToUser(request.getAssigneeId());
-                    cardRepository.save(card);
-                    System.out.println(request);
                 }
+
+                cardRepository.save(card);
                 return card;
             });
     }

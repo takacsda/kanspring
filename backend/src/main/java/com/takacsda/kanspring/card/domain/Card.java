@@ -34,7 +34,7 @@ public class Card {
 
     public void changePriority(CardPriority priority) {
         if (priority == null) {
-            throw new IllegalArgumentException("Priority should not be null.");
+            throw new IllegalArgumentException("Priority must not be null when provided");
         }
         this.priority = priority;
         updateTime();
@@ -42,7 +42,7 @@ public class Card {
 
     public void changeTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title should not be null or blank.");
+            throw new IllegalArgumentException("Title must not be null or blank when provided");
         }
         this.title = title;
         updateTime();

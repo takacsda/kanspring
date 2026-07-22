@@ -13,12 +13,12 @@ public class CardTest {
     @Test
     public void throwExceptionOnConstructor() {
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
-            Card card = new Card(null, null, CardPriority.MEDIUM, UUID.randomUUID(), null);
+            new Card(null, null, CardPriority.MEDIUM, UUID.randomUUID(), null);
         });
         assertEquals("Title must not be blank.", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class, () -> {
-            Card card = new Card("Test title", null, CardPriority.MEDIUM, null, null);
+            new Card("Test title", null, CardPriority.MEDIUM, null, null);
         });
         assertEquals("Owner ID must not be null.", exception.getMessage());
     }

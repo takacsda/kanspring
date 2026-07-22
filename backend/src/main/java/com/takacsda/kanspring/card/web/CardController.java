@@ -10,6 +10,7 @@ import com.takacsda.kanspring.card.web.dto.UpdateCardRequest;
 import com.takacsda.kanspring.card.web.dto.CardResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -52,7 +53,7 @@ public class CardController {
     @Operation(summary = "Get a specific card")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Card found"),
-        @ApiResponse(responseCode = "404", description = "Card with UUID NOT FOUND")
+        @ApiResponse(responseCode = "404", description = "Card with UUID NOT FOUND", content = @Content)
     })
     public ResponseEntity<CardResponse> getCardById(@PathVariable UUID id) {
         return cardService.findById(id)
@@ -65,7 +66,7 @@ public class CardController {
     @Operation(summary = "Create a new card")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "New card is created"),
-        @ApiResponse(responseCode = "400", description = "Invalid request for creating card")
+        @ApiResponse(responseCode = "400", description = "Invalid request for creating card", content = @Content)
     })
     public ResponseEntity<CardResponse> addCard(@Valid @RequestBody CreateCardRequest cardRequest) {
         Card card = cardService.createCard(cardRequest.title(), cardRequest.description(),cardRequest.priority(),cardRequest.ownerId(), cardRequest.assigneeId());
@@ -80,10 +81,10 @@ public class CardController {
     @Operation(summary = "Update a card")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Card updated"),
-        @ApiResponse(responseCode = "400", description = "Invalid request for updating card"),
-        @ApiResponse(responseCode = "404", description = "Card not found for update"),
+        @ApiResponse(responseCode = "400", description = "Invalid request for updating card", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Card not found for update", content = @Content),
     })
-    public ResponseEntity<CardResponse> updateCard(@PathVariable UUID id, @RequestBody UpdateCardRequest request) {
+    public ResponseEntity<CardResponse> updateCard(@PathVariable UUID id, @Valid @RequestBody UpdateCardRequest request) {
         return cardService.updateCard(id, request).
             map(CardResponse::from).
             map(ResponseEntity::ok).

@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import com.takacsda.kanspring.card.domain.CardPriority;
 
+import jakarta.validation.constraints.AssertTrue;
+
 public class UpdateCardRequest {
     private String title;
     private boolean titlePresent;
@@ -25,6 +27,10 @@ public class UpdateCardRequest {
     public boolean hasTitle() {
         return titlePresent;
     }
+    @AssertTrue(message = "Title must not be null or blank when provided")
+    public boolean isTitleValid() {
+        return !titlePresent || (title != null && !title.isBlank());
+    }
 
     public String getDescription() {return description;}
     public void setDescription(String description) {
@@ -42,6 +48,10 @@ public class UpdateCardRequest {
     }
     public boolean hasPriority() {
         return priorityPresent;
+    }
+    @AssertTrue(message = "Priority must not be null when provided")
+    public boolean isPriorityValid() {
+        return !priorityPresent || priority != null;
     }
 
     public UUID getAssigneeId() {return assigneeId;}
