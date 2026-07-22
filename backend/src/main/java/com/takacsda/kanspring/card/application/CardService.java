@@ -1,0 +1,68 @@
+package com.takacsda.kanspring.card.application;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import com.takacsda.kanspring.card.domain.Card;
+import com.takacsda.kanspring.card.domain.CardPriority;
+import com.takacsda.kanspring.card.web.dto.UpdateCardRequest;
+
+@Service
+public class CardService {
+    private final CardRepository cardRepository;
+
+    public CardService(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
+    }
+    
+    public List<Card> findAll(){
+        return cardRepository.findAll();
+    }
+    
+    public Optional<Card> findById(UUID cardId) {
+        return cardRepository.findById(cardId);
+    }
+
+    public boolean deleteById(UUID cardId) {
+        if (findById(cardId).isEmpty()) return false;
+
+        cardRepository.deleteById(cardId);
+        return true;
+    }
+
+    public Card createCard(
+        String title,
+          String description,
+          CardPriority priority,
+          UUID ownerId,
+          UUID assigneeId
+    ) {
+        Card card = new Card(title, description, priority, ownerId, assigneeId);
+        cardRepository.save(card);
+        return card;
+    }
+
+    public Optional<Card> updateCard (UUID cardId, UpdateCardRequest request) {
+        return cardRepository.findById(cardId).
+            map(card -> {
+                if (request.hasTitle()) {
+                    card.changeTitle(request.getTitle());
+                }
+                if (request.hasDescription()) {
+                    card.changeDescription(request.getDescription());
+                }
+                if (request.hasPriority()) {
+                    card.changePriority(request.getPriority());
+                }
+                if (request.hasAssigneeId()) {
+                    card.assignToUser(request.getAssigneeId());
+                }
+
+                cardRepository.save(card);
+                return card;
+            });
+    }
+}
