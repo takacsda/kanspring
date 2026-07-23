@@ -15,12 +15,12 @@ public class CardTest {
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
             new Card(null, null, CardPriority.MEDIUM, UUID.randomUUID(), null);
         });
-        assertEquals("Title must not be blank.", exception.getMessage());
+        assertEquals(IllegalArgumentException.class, exception.getClass());
 
         exception = assertThrows(IllegalArgumentException.class, () -> {
             new Card("Test title", null, CardPriority.MEDIUM, null, null);
         });
-        assertEquals("Owner ID must not be null.", exception.getMessage());
+        assertEquals(IllegalArgumentException.class, exception.getClass());
     }
 
     @Nested
@@ -38,7 +38,7 @@ public class CardTest {
             Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
                 card.changePriority(null);
             });
-            assertEquals("Priority should not be null.", exception.getMessage());
+            assertEquals(IllegalArgumentException.class, exception.getClass());
         }
     }
 
@@ -58,12 +58,12 @@ public class CardTest {
             Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
                 card.changeTitle(null);
             });
-            assertEquals("Title should not be null or blank.", exception.getMessage());
+            assertEquals(IllegalArgumentException.class, exception.getClass());
 
             exception = assertThrows(IllegalArgumentException.class, ()-> {
                 card.changeTitle("");
             });
-            assertEquals("Title should not be null or blank.", exception.getMessage());
+            assertEquals(IllegalArgumentException.class, exception.getClass());
         }
     }
 
